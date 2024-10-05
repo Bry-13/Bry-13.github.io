@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Define el tipo de documento como HTML5 -->
+    <meta charset="UTF-8">
+    <!-- Asegura que la página sea responsiva en dispositivos móviles -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Título de la página que aparecerá en la pestaña del navegador -->
+    <title>Bry's Vet</title>
+    <style>
+        /* Restablece márgenes, rellenos y ajusta el box-sizing para todos los elementos */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Define la fuente y el fondo con un degradado en el body */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to top, #ffffff 71.15%, #f7f7f7 28.85%);
+            overflow-x: hidden;
+        }
+
+        /* Estilos para la barra lateral (sidebar) */
+        .sidebar {
+            height: 100vh; /* Altura completa de la ventana */
+            width: 250px; /* Ancho de la barra lateral */
+            position: fixed; /* Posición fija en la ventana */
+            background-color: #2c3e50; /* Color de fondo oscuro */
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        /* Estilo de los enlaces dentro de la barra lateral */
+        .sidebar a {
+            text-decoration: none; /* Elimina el subrayado de los enlaces */
+            color: white; /* Color de texto blanco */
+            margin: 10px 0; /* Espacio entre enlaces */
+            font-size: 18px;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s; /* Transición suave en hover */
+        }
+
+        /* Cambia el color de fondo del enlace cuando el ratón está sobre él */
+        .sidebar a:hover {
+            background-color: #34495e;
+        }
+
+        /* Estilo especial para el enlace activo en la barra lateral */
+        .sidebar a.active {
+            background-color: #1abc9c;
+        }
+
+        /* Contenedor principal que contiene el contenido de la página */
+        .container {
+            margin-left: 270px; /* Deja espacio para la barra lateral */
+            padding: 20px;
+        }
+
+        /* Estilos para los encabezados de nivel 1 (título principal) */
+        h1 {
+            font-size: 3rem;
+            color: #2c3e50; /* Color del texto del título */
+        }
+
+        /* Estilo de la imagen principal en la parte superior */
+        .main-image {
+            width: 100%;
+            height: 300px;
+            background: url('https://arc-anglerfish-arc2-prod-infobae.s3.amazonaws.com/public/NVWQSYGX3RC7ZBEHLPLDVXA3PU.jpg') no-repeat center center;
+            background-size: cover; /* Asegura que la imagen cubra completamente el área */
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        /* Estilo del contenedor de curiosidades */
+        .curiosities {
+            display: flex;
+            flex-direction: column; /* Organiza las curiosidades en columna */
+            gap: 40px; /* Espacio entre cada curiosidad */
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        /* Estilos para cada curiosidad */
+        .curiosity {
+            display: flex; /* Coloca la imagen y el texto en una fila */
+            align-items: center;
+            gap: 20px; /* Espacio entre la imagen y el texto */
+        }
+
+        /* Alterna el orden de las curiosidades en los elementos pares */
+        .curiosity:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        /* Estilo de las imágenes en las curiosidades */
+        .curiosity img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%; /* Imágenes redondeadas */
+            object-fit: cover;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+        }
+
+        /* Estilo del texto de la curiosidad */
+        .curiosity-info {
+            max-width: 75%; /* Limita el ancho del texto */
+            font-size: 1.1rem;
+            color: #34495e;
+        }
+
+        /* Formulario flotante para agendar una cita */
+        .floating-form {
+            display: none; /* Oculta el formulario por defecto */
+            position: fixed; /* Formulario flotante */
+            top: 50%; /* Posiciona en el centro verticalmente */
+            left: 50%; /* Posiciona en el centro horizontalmente */
+            transform: translate(-50%, -50%); /* Ajusta el formulario al centro */
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            z-index: 1000;
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        /* Estilo para los encabezados del formulario */
+        .floating-form h2 {
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+            color: #2c3e50;
+        }
+
+        /* Estilo de las etiquetas del formulario */
+        .floating-form label {
+            display: block;
+            margin: 8px 0 3px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        /* Estilo de los campos de entrada del formulario */
+        .floating-form input, .floating-form select, .floating-form textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f8f8f8;
+        }
+
+        /* Estilo de los botones del formulario */
+        .floating-form button {
+            padding: 10px;
+            width: 48%; /* Botones ocupan la mitad del espacio */
+            border: none;
+            cursor: pointer;
+            background-color: #1abc9c;
+            color: white;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+
+        /* Botón de limpiar con un color diferente */
+        .floating-form button.clear {
+            background-color: #e74c3c;
+        }
+
+        /* Botón de cierre del formulario */
+        .floating-form .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: #000000;
+            font-size: 30px;
+        }
+
+        /* Estilo del mensaje de confirmación después de registrar la cita */
+        .message {
+            margin-top: 10px;
+            color: green;
+            font-size: 1.1rem;
+        }
+
+        /* Estilo del pie de página */
+        footer {
+            margin-top: 50px;
+            padding: 20px;
+            background-color: #2c3e50;
+            text-align: center;
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Barra lateral de navegación -->
+    <div class="sidebar">
+        <a href="#" class="active">Inicio</a>
+        <a href="#curiosities">Datos Curiosos</a>
+        <a href="#" onclick="openForm()">Agendar Cita</a>
+        <a href="#contact">Contacto</a>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <h1>Bienvenidos a Bry's Vet</h1>
+        <!-- Imagen principal decorativa -->
+        <div class="main-image"></div>
+
+        <!-- Sección de curiosidades -->
+        <h2>Datos Curiosos sobre Mascotas</h2>
+        <div class="curiosities" id="curiosities">
+            <!-- Primera curiosidad -->
+            <div class="curiosity">
+                <img src="https://ksdy50.com/wp-content/uploads/2023/08/Cheems-el-perro.jpg" alt="Perro">
+                <p class="curiosity-info">Los perros son conocidos por tener un sentido del olfato extraordinario, pero ¿sabías que 
+                    es entre 10,000 y 100,000 veces más agudo que el de los humanos? Esto se debe a que poseen hasta 300 millones de 
+                    receptores olfativos en la nariz, mientras que los humanos solo tenemos alrededor de 6 millones. Además, la parte 
+                    del cerebro dedicada al análisis de los olores es proporcionalmente 40 veces mayor en perros que en personas. Es 
+                    por esta razón que son entrenados para detectar desde drogas hasta enfermedades como el cáncer o el COVID-19, 
+                    usando únicamente su nariz.</p>
+            </div>
+            <!-- Segunda curiosidad -->
+            <div class="curiosity">
+                <p class="curiosity-info">A pesar de lo que podrías pensar, los gatos no sienten atracción por alimentos dulces. Esto 
+                    se debe a una mutación genética en sus receptores de sabor, que les impide detectar los sabores dulces. A diferencia 
+                    de los humanos y otros mamíferos, los gatos han evolucionado como carnívoros estrictos, lo que significa que su 
+                    dieta no incluye carbohidratos ni azúcares, por lo que no necesitan este sentido del gusto. En lugar de lo dulce, 
+                    los gatos son más sensibles a los sabores umami, que están presentes en la carne, lo cual es clave para su 
+                    supervivencia en la naturaleza.</p>
+                <img src="https://i.pinimg.com/236x/97/11/17/97111792307ebc743b25fd5438a9d25c.jpg" alt="Gato">
+            </div>
+            <!-- Tercera curiosidad -->
+            <div class="curiosity">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRJO0cNW1kR87INTgoVzltlHRiUWvBhXOFSg&s" alt="Conejo">
+                <p class="curiosity-info">Los conejos son criaturas increíblemente sociales y atentas. Uno de sus rasgos más fascinantes 
+                    es su habilidad para mover sus orejas en un rango de casi 180 grados. Esta habilidad les permite detectar sonidos 
+                    provenientes de distintas direcciones, lo que les da una gran ventaja para evitar depredadores. No solo usan sus 
+                    orejas para escuchar, también lo hacen para comunicarse con otros conejos, ya que la posición de sus orejas puede 
+                    indicar su estado de ánimo, como si están relajados o alertas. Además, su audición es tan aguda que pueden escuchar 
+                    sonidos hasta a 2 kilómetros de distancia, lo que les ayuda a reaccionar rápidamente ante cualquier amenaza.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario flotante para agendar cita -->
+    <div class="floating-form" id="appointmentForm">
+        <span class="close-btn" onclick="closeForm()">x</span>
+        <h2>Agendar una Cita</h2>
+
+        <!-- Campos del formulario -->
+        <label for="ownerName">Nombre del Dueño</label>
+        <input type="text" id="ownerName" required>
+
+        <label for="email">Correo Electrónico</label>
+        <input type="email" id="email" required>
+
+        <label for="phone">Número de Teléfono</label>
+        <input type="tel" id="phone" required>
+
+        <label for="petName">Nombre de la Mascota</label>
+        <input type="text" id="petName" required>
+
+        <label for="petType">Tipo de Mascota</label>
+        <input type="text" id="petType" required>
+
+        <label for="age">Edad</label>
+        <input type="number" id="age" required>
+
+        <label for="breed">Raza</label>
+        <input type="text" id="breed" required>
+
+        <label for="gender">Género</label>
+        <select id="gender">
+            <option value="Macho">Macho</option>
+            <option value="Hembra">Hembra</option>
+        </select>
+
+        <label for="reason">Motivo de la Consulta</label>
+        <textarea id="reason" rows="3" required></textarea>
+
+        <label for="appointmentDate">Fecha de la Consulta</label>
+        <input type="date" id="appointmentDate" required>
+
+        <!-- Botones del formulario -->
+        <div style="display: flex; justify-content: space-between;">
+            <button onclick="registerAppointment()">Registrar</button>
+            <button class="clear" onclick="clearForm()">Limpiar</button>
+        </div>
+
+        <!-- Mensaje de confirmación -->
+        <p class="message" id="message"></p>
+    </div>
+
+    <!-- Pie de página con información de contacto -->
+    <footer id="contact">
+        <p>Contacto: bryanvet@gmail.com | Teléfono: 287-111-8854</p>
+    </footer>
+
+    <script>
+        /* Función para abrir el formulario flotante */
+        function openForm() {
+            document.getElementById('appointmentForm').style.display = 'block';
+        }
+
+        /* Función para cerrar el formulario flotante */
+        function closeForm() {
+            document.getElementById('appointmentForm').style.display = 'none';
+        }
+
+        /* Función para registrar la cita */
+        function registerAppointment() {
+            const ownerName = document.getElementById('ownerName').value;
+            const appointmentDate = document.getElementById('appointmentDate').value;
+            const message = `Buenas tardes ${ownerName}, la consulta ha sido registrada exitosamente para el día ${appointmentDate}.`;
+            document.getElementById('message').textContent = message;
+        }
+
+        /* Función para limpiar el formulario */
+        function clearForm() {
+            document.getElementById('ownerName').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('petName').value = '';
+            document.getElementById('petType').value = '';
+            document.getElementById('age').value = '';
+            document.getElementById('breed').value = '';
+            document.getElementById('gender').value = '';
+            document.getElementById('reason').value = '';
+            document.getElementById('appointmentDate').value = '';
+            document.getElementById('message').textContent = '';
+        }
+    </script>
+
+</body>
+</html>
